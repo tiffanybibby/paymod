@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.tiffany'
+group = 'com.tiffany.paymod'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -13,7 +13,13 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springframework.boot:spring-boot-starter-web:4.0.0-M3'
+    implementation 'org.springframework.boot:spring-boot-starter-web:4.0.0-RC1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:4.0.0-RC1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-parameters"
 }
 
 test {
