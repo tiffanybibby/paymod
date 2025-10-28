@@ -1,41 +1,17 @@
 package com.tiffany.paymod;
 
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    private final List<User> userList = new ArrayList<>();
-    private Long nextId = 1L;
+    List<User> fetchAllUsers();
 
-    public List<User> fetchAllUsers() {
-        return userList;
-    }
+    Optional<User> fetchUser(Long id);
 
-    public Optional<User> fetchUser(Long id) {
-        return userList.stream().filter(user -> user.getId().equals(id)).findFirst();
-    }
+    void addUser(User user);
 
-    public void addUser(User user) {
-        user.setId(nextId++);
-        userList.add(user);
-    }
+    boolean updateUser(Long id, User updatedUser);
 
-    public boolean updateUser(Long id, User updatedUser) {
-        return userList.stream()
-                .filter(user -> user.getId().equals(id)).findFirst()
-                .map(existingUser -> {
-                    existingUser.setEmail(updatedUser.getEmail());
-                    return true;
-                })
-                .orElse(false);
-    }
-
-    public boolean deleteUser(Long id) {
-        return userList.removeIf(user -> user.getId().equals(id));
-    }
+    boolean deleteUser(Long id);
 }
