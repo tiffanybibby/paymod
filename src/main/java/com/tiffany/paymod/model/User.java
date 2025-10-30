@@ -1,4 +1,4 @@
-package com.tiffany.paymod;
+package com.tiffany.paymod.model;
 
 import lombok.Data;
 

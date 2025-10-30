@@ -1,5 +1,7 @@
-package com.tiffany.paymod;
+package com.tiffany.paymod.service.impl;
 
+import com.tiffany.paymod.model.User;
+import com.tiffany.paymod.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

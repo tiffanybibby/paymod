@@ -1,5 +1,7 @@
-package com.tiffany.paymod;
+package com.tiffany.paymod.controllers;
 
+import com.tiffany.paymod.service.UserService;
+import com.tiffany.paymod.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

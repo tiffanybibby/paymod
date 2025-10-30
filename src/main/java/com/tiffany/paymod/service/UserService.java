@@ -1,4 +1,6 @@
-package com.tiffany.paymod;
+package com.tiffany.paymod.service;
+
+import com.tiffany.paymod.model.User;
 
 import java.util.List;
 import java.util.Optional;
