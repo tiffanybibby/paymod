@@ -13,7 +13,7 @@ public interface PaymentService {
 
     boolean createPayment(String userId, Payment payment);
 
-    boolean submitPayment(String userId, Payment payment);
+    boolean submitPayment(String userId, Payment payment, Long paymentId);
 
     Optional<Payment> getPayment(Long paymentId);
 

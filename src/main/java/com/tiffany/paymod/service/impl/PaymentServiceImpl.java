@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -35,12 +34,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<Payment> fetchPaymentsByUser(String userId) {
-        return paymentList.stream().filter(payment -> payment.getUser().getId().equals(userId)).collect(Collectors.toList());
+        return paymentList.stream().filter(payment -> payment.getUser() != null && Long.valueOf(userId).equals(payment.getUser().getId())).toList();
     }
 
     @Override
     public List<Payment> getAllPaymentsByUserAndStatus(String userId, PaymentStatus paymentStatus) {
-        return List.of();
+    return paymentList.stream().filter(payment -> payment.getUser() != null && Long.valueOf(userId).equals(payment.getUser().getId())).toList().stream()
+            .filter(payment -> payment.getPaymentStatus() == paymentStatus).toList();
     }
 
     @Override
@@ -58,7 +58,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean submitPayment(String userId, Payment payment) {
+    public boolean submitPayment(String userId, Payment payment, Long paymentId) {
+        Optional<Payment> existingPaymentOpt = getPayment(paymentId);
+        if (existingPaymentOpt.isPresent()) {
+            Payment existingPayment = existingPaymentOpt.get();
+            if (existingPayment.getUser() != null && Long.valueOf(userId).equals(existingPayment.getUser().getId())) {
+                existingPayment.setAmount(payment.getAmount());
+                existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
+                existingPayment.setUpdatedAt(LocalDateTime.now());
+                return true;
+            }
+        }
         return false;
     }
 }

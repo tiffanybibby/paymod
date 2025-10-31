@@ -29,14 +29,14 @@ public class PaymentController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping(params = "userId")
+    @GetMapping(headers = "X-User-ID")
     public ResponseEntity<List<Payment>> getPaymentsByUser(@RequestHeader("X-User-ID") String userId) {
         return new ResponseEntity<>(paymentService.fetchPaymentsByUser(userId),HttpStatus.OK);
     }
 
-    @GetMapping("/{paymentStatus}")
-    public ResponseEntity<List<Payment>> getAllPaymentsByUserAndStatus(@RequestHeader("X-User-ID") String userId, PaymentStatus paymentStatus) {
-        return new ResponseEntity<>(paymentService.getAllPaymentsByUserAndStatus(userId, paymentStatus),HttpStatus.OK);
+    @GetMapping(value = "/status/{paymentStatus}", headers = "X-User-ID")
+    public ResponseEntity<List<Payment>> getAllPaymentsByUserAndStatus(@RequestHeader("X-User-ID") String userId, @PathVariable String paymentStatus) {
+        return new ResponseEntity<>(paymentService.getAllPaymentsByUserAndStatus(userId, PaymentStatus.valueOf(paymentStatus)),HttpStatus.OK);
     }
 
     @PostMapping
@@ -50,7 +50,7 @@ public class PaymentController {
 
     @PutMapping("/{paymentId}")
     public ResponseEntity<String> submitPayment(@RequestHeader("X-User-ID") String userId, @PathVariable Long paymentId, @RequestBody Payment payment){
-        boolean paymentComplete = paymentService.submitPayment(userId, payment);
+        boolean paymentComplete = paymentService.submitPayment(userId, payment, paymentId);
         return paymentComplete ? ResponseEntity.badRequest().body("Payment successful") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
