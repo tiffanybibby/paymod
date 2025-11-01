@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/payment")
+@RequestMapping("api/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -30,17 +30,17 @@ public class PaymentController {
     }
 
     @GetMapping(headers = "X-User-ID")
-    public ResponseEntity<List<Payment>> getPaymentsByUser(@RequestHeader("X-User-ID") String userId) {
-        return new ResponseEntity<>(paymentService.fetchPaymentsByUser(userId),HttpStatus.OK);
+    public ResponseEntity<List<Payment>> getPaymentsByUser(@RequestHeader("X-User-ID") Long userId) {
+        return new ResponseEntity<>(paymentService.listPaymentsByUser(userId),HttpStatus.OK);
     }
 
     @GetMapping(value = "/status/{paymentStatus}", headers = "X-User-ID")
-    public ResponseEntity<List<Payment>> getAllPaymentsByUserAndStatus(@RequestHeader("X-User-ID") String userId, @PathVariable String paymentStatus) {
-        return new ResponseEntity<>(paymentService.getAllPaymentsByUserAndStatus(userId, PaymentStatus.valueOf(paymentStatus)),HttpStatus.OK);
+    public ResponseEntity<List<Payment>> getAllPaymentsByUserAndStatus(@RequestHeader("X-User-ID") Long userId, @PathVariable String paymentStatus) {
+        return new ResponseEntity<>(paymentService.listPaymentsByUserAndStatus(userId, PaymentStatus.valueOf(paymentStatus)),HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> createPaymentRequest(@RequestHeader("X-User-ID") String userId, @RequestBody Payment payment) {
+    public ResponseEntity<String> createPayment(@RequestHeader("X-User-ID") Long userId, @RequestBody Payment payment) {
         if (!paymentService.createPayment(userId, payment)) {
             return ResponseEntity.badRequest().body("Unable to create payment");
         } else{
@@ -48,9 +48,15 @@ public class PaymentController {
         }
     }
 
-    @PutMapping("/{paymentId}")
-    public ResponseEntity<String> submitPayment(@RequestHeader("X-User-ID") String userId, @PathVariable Long paymentId, @RequestBody Payment payment){
-        boolean paymentComplete = paymentService.submitPayment(userId, payment, paymentId);
+    @PutMapping("/{paymentId}/capture")
+    public ResponseEntity<String> capturePayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId, @RequestBody Payment payment){
+        boolean paymentComplete = paymentService.capturePayment(userId, payment, paymentId);
         return paymentComplete ? ResponseEntity.ok().body("Payment successful") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PutMapping("/{paymentId}/fail")
+    public ResponseEntity<String> failPayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId, @RequestBody Payment payment){
+        boolean paymentComplete = paymentService.failPayment(userId, payment, paymentId);
+        return paymentComplete ? ResponseEntity.ok().body("Payment failed") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

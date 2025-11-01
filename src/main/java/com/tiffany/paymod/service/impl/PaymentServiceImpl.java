@@ -29,18 +29,18 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> fetchPaymentsByUser(String userId) {
-        return paymentRepository.findPaymentsByUserId(Long.valueOf(userId));
+    public List<Payment> listPaymentsByUser(Long userId) {
+        return paymentRepository.findPaymentsByUserId(userId);
     }
 
     @Override
-    public List<Payment> getAllPaymentsByUserAndStatus(String userId, PaymentStatus paymentStatus) {
-    return paymentRepository.findPaymentsByUserIdAndPaymentStatus(Long.valueOf(userId),paymentStatus);
+    public List<Payment> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus) {
+        return paymentRepository.findPaymentsByUserIdAndPaymentStatus(userId, paymentStatus);
     }
 
     @Override
-    public boolean createPayment(String userId, Payment payment) {
-        return userRepository.findById(Long.valueOf(userId))
+    public boolean createPayment(Long userId, Payment payment) {
+        return userRepository.findById(userId)
                 .map(existingUser -> {
                     payment.setUser(existingUser);
                     paymentRepository.save(payment);
@@ -49,17 +49,28 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean submitPayment(String userId, Payment payment, Long paymentId) {
-        Optional<Payment> existingPaymentOpt = getPayment(paymentId);
-        if (existingPaymentOpt.isPresent()) {
-            Payment existingPayment = existingPaymentOpt.get();
-            if (existingPayment.getUser() != null && Long.valueOf(userId).equals(existingPayment.getUser().getId())) {
-                existingPayment.setAmount(payment.getAmount());
-                existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
-                paymentRepository.save(existingPayment);
-                return true;
-            }
-        }
-        return false;
+    public boolean capturePayment(Long userId, Payment payment, Long paymentId) {
+        return paymentRepository.findById(paymentId)
+                .map(existingPayment -> {
+                    if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
+                        existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
+                        paymentRepository.save(existingPayment);
+                        return true;
+                    }
+                    return false;
+                }).orElse(false);
+    }
+
+    @Override
+    public boolean failPayment(Long userId, Payment payment, Long paymentId) {
+        return paymentRepository.findById(paymentId)
+                .map(existingPayment -> {
+                    if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
+                        existingPayment.setPaymentStatus(PaymentStatus.FAILED);
+                        paymentRepository.save(existingPayment);
+                        return true;
+                    }
+                    return false;
+                }).orElse(false);
     }
 }

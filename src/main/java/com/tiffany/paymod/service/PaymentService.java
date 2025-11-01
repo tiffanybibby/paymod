@@ -9,15 +9,17 @@ import java.util.Optional;
 public interface PaymentService {
 
 
-    List<Payment> getAllPaymentsByUserAndStatus(String userId, PaymentStatus paymentStatus);
-
-    boolean createPayment(String userId, Payment payment);
-
-    boolean submitPayment(String userId, Payment payment, Long paymentId);
+    List<Payment> getAllPayments();
 
     Optional<Payment> getPayment(Long paymentId);
 
-    List<Payment> fetchPaymentsByUser(String userId);
+    List<Payment> listPaymentsByUser(Long userId);
 
-    List<Payment> getAllPayments();
+    List<Payment> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus);
+
+    boolean createPayment(Long userId, Payment payment);
+
+    boolean capturePayment(Long userId, Payment payment, Long paymentId);
+
+    boolean failPayment(Long userId, Payment payment, Long paymentId);
 }
