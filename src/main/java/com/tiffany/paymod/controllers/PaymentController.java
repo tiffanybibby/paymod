@@ -51,6 +51,6 @@ public class PaymentController {
     @PutMapping("/{paymentId}")
     public ResponseEntity<String> submitPayment(@RequestHeader("X-User-ID") String userId, @PathVariable Long paymentId, @RequestBody Payment payment){
         boolean paymentComplete = paymentService.submitPayment(userId, payment, paymentId);
-        return paymentComplete ? ResponseEntity.badRequest().body("Payment successful") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return paymentComplete ? ResponseEntity.ok().body("Payment successful") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

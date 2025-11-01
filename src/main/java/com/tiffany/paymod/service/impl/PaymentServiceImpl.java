@@ -2,59 +2,50 @@ package com.tiffany.paymod.service.impl;
 
 import com.tiffany.paymod.model.Payment;
 import com.tiffany.paymod.model.PaymentStatus;
-import com.tiffany.paymod.model.User;
+import com.tiffany.paymod.repository.PaymentRepository;
+import com.tiffany.paymod.repository.UserRepository;
 import com.tiffany.paymod.service.PaymentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final List<Payment> paymentList = new ArrayList<>();
-    private final UserServiceImpl userServiceImpl;
-    private Long nextId = 1L;
-
-    public PaymentServiceImpl(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-    }
+    private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<Payment> getAllPayments() {
-        return paymentList;
+        return paymentRepository.findAll();
     }
 
     @Override
     public Optional<Payment> getPayment(Long paymentId) {
-        return paymentList.stream().filter(payment -> payment.getId().equals(paymentId)).findFirst();
+        return paymentRepository.findById(paymentId);
     }
 
     @Override
     public List<Payment> fetchPaymentsByUser(String userId) {
-        return paymentList.stream().filter(payment -> payment.getUser() != null && Long.valueOf(userId).equals(payment.getUser().getId())).toList();
+        return paymentRepository.findPaymentsByUserId(Long.valueOf(userId));
     }
 
     @Override
     public List<Payment> getAllPaymentsByUserAndStatus(String userId, PaymentStatus paymentStatus) {
-    return paymentList.stream().filter(payment -> payment.getUser() != null && Long.valueOf(userId).equals(payment.getUser().getId())).toList().stream()
-            .filter(payment -> payment.getPaymentStatus() == paymentStatus).toList();
+    return paymentRepository.findPaymentsByUserIdAndPaymentStatus(Long.valueOf(userId),paymentStatus);
     }
 
     @Override
     public boolean createPayment(String userId, Payment payment) {
-        Optional<User> user = userServiceImpl.fetchUser(Long.valueOf(userId));
-        if (user.isPresent()) {
-            payment.setUser(user.get());
-            payment.setId(nextId++);
-            payment.setCreatedAt(LocalDateTime.now());
-            payment.setUpdatedAt(LocalDateTime.now());
-            paymentList.add(payment);
-            return true;
-        }
-        return false;
+        return userRepository.findById(Long.valueOf(userId))
+                .map(existingUser -> {
+                    payment.setUser(existingUser);
+                    paymentRepository.save(payment);
+                    return true;
+                }).orElse(false);
     }
 
     @Override
@@ -65,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (existingPayment.getUser() != null && Long.valueOf(userId).equals(existingPayment.getUser().getId())) {
                 existingPayment.setAmount(payment.getAmount());
                 existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
-                existingPayment.setUpdatedAt(LocalDateTime.now());
+                paymentRepository.save(existingPayment);
                 return true;
             }
         }
