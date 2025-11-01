@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Data
 @Entity(name = "user_table")
-//@NoArgsConstructor
 public class User {
 
     @Id
