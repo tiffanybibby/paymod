@@ -4,9 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Main {
+public class PaymodApplication {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-        System.out.print("Hello World!\n");
+        SpringApplication.run(PaymodApplication.class, args);
     }
 }
