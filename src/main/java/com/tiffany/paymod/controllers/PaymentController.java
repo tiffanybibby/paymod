@@ -49,14 +49,14 @@ public class PaymentController {
     }
 
     @PutMapping("/{paymentId}/capture")
-    public ResponseEntity<String> capturePayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId, @RequestBody Payment payment){
-        boolean paymentComplete = paymentService.capturePayment(userId, payment, paymentId);
+    public ResponseEntity<String> capturePayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId){
+        boolean paymentComplete = paymentService.capturePayment(userId, paymentId);
         return paymentComplete ? ResponseEntity.ok().body("Payment successful") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping("/{paymentId}/fail")
-    public ResponseEntity<String> failPayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId, @RequestBody Payment payment){
-        boolean paymentComplete = paymentService.failPayment(userId, payment, paymentId);
+    public ResponseEntity<String> failPayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId){
+        boolean paymentComplete = paymentService.failPayment(userId, paymentId);
         return paymentComplete ? ResponseEntity.ok().body("Payment failed") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

@@ -49,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean capturePayment(Long userId, Payment payment, Long paymentId) {
+    public boolean capturePayment(Long userId, Long paymentId) {
         return paymentRepository.findById(paymentId)
                 .map(existingPayment -> {
                     if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
@@ -62,7 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean failPayment(Long userId, Payment payment, Long paymentId) {
+    public boolean failPayment(Long userId, Long paymentId) {
         return paymentRepository.findById(paymentId)
                 .map(existingPayment -> {
                     if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
