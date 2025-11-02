@@ -5,12 +5,29 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:test
+#    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:paymod;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+#      ddl-auto: create
+      ddl-auto: update
     open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: paymod-dev
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    listener:
+      ack-mode: record
 springdoc:
   api-docs:
     path: /api-docs
@@ -21,3 +38,7 @@ management:
     web:
       exposure:
         include: health,info
+paymod:
+  topics:
+    payments-created: paymod.payments.created.v1
+    payments-updated: paymod.payments.updated.v1
