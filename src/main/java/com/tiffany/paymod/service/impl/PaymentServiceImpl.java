@@ -3,7 +3,9 @@ package com.tiffany.paymod.service.impl;
 import com.tiffany.paymod.domain.PaymentCreatedDomainEvent;
 import com.tiffany.paymod.domain.PaymentStatusChangedDomainEvent;
 import com.tiffany.paymod.model.Payment;
+import com.tiffany.paymod.model.PaymentHistory;
 import com.tiffany.paymod.model.PaymentStatus;
+import com.tiffany.paymod.repository.PaymentHistoryRepository;
 import com.tiffany.paymod.repository.PaymentRepository;
 import com.tiffany.paymod.repository.UserRepository;
 import com.tiffany.paymod.service.PaymentService;
@@ -22,6 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher events;
+    private final PaymentHistoryRepository paymentHistoryRepository;
 
     @Override
     public List<Payment> getAllPayments() {
@@ -61,9 +64,12 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findById(paymentId)
                 .map(existingPayment -> {
                     if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
+                        PaymentStatus oldStatus = existingPayment.getPaymentStatus();
                         existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
                         paymentRepository.save(existingPayment);
-                        events.publishEvent(new PaymentStatusChangedDomainEvent(existingPayment.getId()));
+                        events.publishEvent(new PaymentStatusChangedDomainEvent(
+                                existingPayment.getId(), oldStatus, existingPayment.getPaymentStatus()
+                        ));
                         return true;
                     }
                     return false;
@@ -76,12 +82,20 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findById(paymentId)
                 .map(existingPayment -> {
                     if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
+                        PaymentStatus oldStatus = existingPayment.getPaymentStatus();
                         existingPayment.setPaymentStatus(PaymentStatus.FAILED);
                         paymentRepository.save(existingPayment);
-                        events.publishEvent(new PaymentStatusChangedDomainEvent(existingPayment.getId()));
+                        events.publishEvent(new PaymentStatusChangedDomainEvent(
+                                existingPayment.getId(), oldStatus, existingPayment.getPaymentStatus()
+                        ));
                         return true;
                     }
                     return false;
                 }).orElse(false);
+    }
+
+    @Override
+    public List<PaymentHistory> findByPaymentIdOrderByOccurredAtAsc(Long paymentId) {
+        return paymentHistoryRepository.findByPaymentIdOrderByOccurredAtAsc(paymentId);
     }
 }
