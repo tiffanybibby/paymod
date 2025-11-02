@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.5.7'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'com.tiffany.paymod'
@@ -14,8 +16,12 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.7'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.7'
+    implementation 'org.springframework.kafka:spring-kafka:3.3.10'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     runtimeOnly 'com.h2database:h2:2.4.240'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     compileOnly 'org.projectlombok:lombok:1.18.42'
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
@@ -25,6 +31,7 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.springframework.kafka:spring-kafka-test:3.3.10'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
