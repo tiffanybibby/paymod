@@ -1,4 +1,9 @@
 package com.tiffany.paymod.domain;
 
-public record PaymentStatusChangedDomainEvent(Long paymentId)  {
-}
+import com.tiffany.paymod.model.PaymentStatus;
+
+public record PaymentStatusChangedDomainEvent(
+        Long paymentId,
+        PaymentStatus oldStatus,
+        PaymentStatus newStatus
+){}
