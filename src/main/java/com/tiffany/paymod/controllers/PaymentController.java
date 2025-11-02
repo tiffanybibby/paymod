@@ -1,6 +1,7 @@
 package com.tiffany.paymod.controllers;
 
 import com.tiffany.paymod.model.Payment;
+import com.tiffany.paymod.model.PaymentHistory;
 import com.tiffany.paymod.model.PaymentStatus;
 import com.tiffany.paymod.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -58,5 +59,10 @@ public class PaymentController {
     public ResponseEntity<String> failPayment(@RequestHeader("X-User-ID") Long userId, @PathVariable Long paymentId){
         boolean paymentComplete = paymentService.failPayment(userId, paymentId);
         return paymentComplete ? ResponseEntity.ok().body("Payment failed") : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("/{paymentId}/history")
+    public ResponseEntity<List<PaymentHistory>> getPaymentHistory(@PathVariable Long paymentId) {
+        return new ResponseEntity<>(paymentService.findByPaymentIdOrderByOccurredAtAsc(paymentId), HttpStatus.OK);
     }
 }
