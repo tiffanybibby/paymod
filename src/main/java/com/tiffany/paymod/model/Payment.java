@@ -41,5 +41,6 @@ public class Payment {
     private LocalDateTime updatedAt;
 
     @Version
+    @Column(nullable = false)
     private Integer version;
 }
