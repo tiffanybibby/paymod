@@ -19,7 +19,7 @@ public interface PaymentService {
 
     boolean createPayment(Long userId, Payment payment);
 
-    boolean capturePayment(Long userId, Payment payment, Long paymentId);
+    boolean capturePayment(Long userId, Long paymentId);
 
-    boolean failPayment(Long userId, Payment payment, Long paymentId);
+    boolean failPayment(Long userId, Long paymentId);
 }
