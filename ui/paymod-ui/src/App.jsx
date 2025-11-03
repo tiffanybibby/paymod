@@ -27,7 +27,6 @@ export default function App() {
         })();
     }, []);
 
-    // inline component renderer
     const StatusCell = (p) => {
         const s = p.value;
         const status =

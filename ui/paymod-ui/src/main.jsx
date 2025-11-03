@@ -22,12 +22,9 @@ function usePrefersColorScheme() {
             mq.addEventListener("change", onChange);
             return () => mq.removeEventListener("change", onChange);
         }
-        // Fallback for very old Safari
         mq.addListener?.(onChange);
         return () => mq.removeListener?.(onChange);
     }, []);
-
-    console.log(mode)
     return mode;
 }
 
