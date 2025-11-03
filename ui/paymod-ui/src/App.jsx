@@ -5,6 +5,7 @@ import { StackLayout, Text, FormField, Input, Button, Panel, StatusIndicator } f
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "@salt-ds/ag-grid-theme/salt-ag-theme.css";
+import QuickActions from "./components/QuickActions.jsx";
 
 export default function App() {
     const [payments, setPayments] = useState([]);
@@ -13,6 +14,8 @@ export default function App() {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [reloadToken, setReloadToken] = useState(0);
+    const refreshAll = () => setReloadToken((x) => x + 1);
 
     useEffect(() => {
         (async () => {
@@ -25,7 +28,7 @@ export default function App() {
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [reloadToken]);
 
     const StatusCell = (p) => {
         const s = p.value;
@@ -79,6 +82,7 @@ export default function App() {
             </StackLayout>
 
             <div style={{ maxWidth: "1200px", width: "95vw", margin: "24px auto" }}>
+                <QuickActions onRefresh={refreshAll} />
             <div className="ag-theme-salt-ag" style={{ height: "70vh", width: "100%" }}>
                 <AgGridReact
                     gridOptions={{ theme: "legacy" }}
