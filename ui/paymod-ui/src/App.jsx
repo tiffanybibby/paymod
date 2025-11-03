@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import axios from "axios";
-import { StackLayout, Text, FormField, Input, Button } from "@salt-ds/core";
+import { StackLayout, Text, FormField, Input, Button, Panel, StatusIndicator } from "@salt-ds/core";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "@salt-ds/ag-grid-theme/salt-ag-theme.css";
@@ -27,12 +27,20 @@ export default function App() {
         })();
     }, []);
 
+    // inline component renderer
+    const StatusCell = (p) => {
+        const s = p.value;
+        const status =
+            s === "SUCCESS" ? "success" : s === "FAILED" ? "error" : "info";
+        return <StatusIndicator status={status}>{s}</StatusIndicator>;
+    };
+
     const columns = [
         { field: "id", headerName: "ID", maxWidth: 100 },
         { field: "userEmail", headerName: "User", minWidth: 240, flex: 1 },
         { field: "amount", headerName: "Amount", valueFormatter: p => `$${Number(p.value/100).toFixed(2)}` },
         { field: "currency", headerName: "CCY", maxWidth: 100 },
-        { field: "paymentStatus", headerName: "Status", minWidth: 130 },
+        { field: "paymentStatus", headerName: "Status", minWidth: 130, cellRenderer: StatusCell },
         { field: "createdAt", headerName: "Created", minWidth: 220,
             valueFormatter: p => new Date(p.value).toLocaleString()
         },
@@ -83,16 +91,16 @@ export default function App() {
             </div>
 
             {selectedId && (
-                <>
+                <Panel style={{ marginTop: 16, padding: 12 }}>
                     <Text styleAs="h3" style={{ marginTop: 12 }}>History for Payment #{selectedId}</Text>
                     <ul style={{ marginTop: 8 }}>
-                        {paymentHistory.map((history) => (
+                        {history.map((history) => (
                             <li key={history.id}>
                                 <strong>{history.eventType}</strong> → {history.newStatus ?? "-"} at {history.occurredAt}
                             </li>
                         ))}
                     </ul>
-                </>
+                </Panel>
             )}
         </StackLayout>
     );
