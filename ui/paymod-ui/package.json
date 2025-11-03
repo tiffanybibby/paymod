@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@salt-ds/ag-grid-theme": "^2.6.0",
     "@salt-ds/core": "^1.52.0",
     "@salt-ds/data-grid": "^1.0.31",
     "@salt-ds/icons": "^1.15.0",
     "@salt-ds/theme": "^1.35.0",
+    "ag-grid-community": "^34.3.1",
+    "ag-grid-react": "^34.3.1",
     "axios": "^1.13.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
