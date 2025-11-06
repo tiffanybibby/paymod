@@ -1,5 +1,5 @@
 package com.tiffany.paymod.model;
 
 public enum PaymentStatus {
-    PENDING, SUCCESS, FAILED
+    PENDING, SUCCEEDED, FAILED
 }
