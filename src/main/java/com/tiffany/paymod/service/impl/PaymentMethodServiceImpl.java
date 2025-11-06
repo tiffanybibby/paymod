@@ -73,6 +73,15 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         paymentMethod.setDeletedAt(LocalDateTime.now());
         paymentMethod.setDefault(false);
         paymentMethod.setStatus(PaymentMethodStatus.INACTIVE);
+        User user = userRepository.getReferenceById(userId);
+        if (user.getDefaultPaymentMethod().getId().equals(paymentMethodId)) {
+            List<PaymentMethod> remainingPaymentMethods = paymentMethodRepository.findByUserIdAndDeletedAtIsNullOrderByIsDefaultDescIdAsc(userId);
+            if (!remainingPaymentMethods.isEmpty()) {
+                PaymentMethod newDefault = remainingPaymentMethods.getFirst();
+                newDefault.setDefault(true);
+                userRepository.getReferenceById(userId).setDefaultPaymentMethod(newDefault);
+            } else user.setDefaultPaymentMethod(null);
+        }
     }
 
     private static String mint() {
