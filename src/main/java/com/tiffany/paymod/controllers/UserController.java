@@ -43,6 +43,15 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> patchUser(@PathVariable Long id, @RequestBody java.util.Map<String, Object> payload) {
+        boolean updated = userService.patchUser(id, payload);
+        if (updated) {
+            return ResponseEntity.ok("User updated successfully");
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
