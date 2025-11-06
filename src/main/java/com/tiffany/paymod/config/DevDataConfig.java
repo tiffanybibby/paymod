@@ -31,7 +31,10 @@ public class DevDataConfig {
             });
 
             PaymentMethod paymentMethod1 = paymentMethodRepository.findByUserIdAndDeletedAtIsNullOrderByIsDefaultDescIdAsc(user.getId())
-                    .stream().findFirst().orElseGet(() -> {
+                    .stream()
+                    .filter(pm -> "token_demo_R".equals(pm.getToken()))
+                    .findFirst()
+                    .orElseGet(() -> {
                         PaymentMethod newPaymentMethod = PaymentMethod.builder()
                                 .user(user)
                                 .provider("MOCK")
@@ -49,7 +52,7 @@ public class DevDataConfig {
 
             PaymentMethod paymentMethod2 = paymentMethodRepository.findByUserIdAndDeletedAtIsNullOrderByIsDefaultDescIdAsc(user.getId())
                     .stream()
-                    .filter(pm -> "token_demo_F".equals(pm.getToken()) || "Business Master".equals(pm.getLabel()))
+                    .filter(pm -> "token_demo_F".equals(pm.getToken()))
                     .findFirst()
                     .orElseGet(() -> {
                         PaymentMethod additional = PaymentMethod.builder()
@@ -66,10 +69,7 @@ public class DevDataConfig {
                         return paymentMethodRepository.save(additional);
                     });
 
-            boolean alreadySeededWithR = paymentRepository.findAll().stream()
-                    .anyMatch(payment -> payment.getPaymentStatus() == PaymentStatus.PENDING
-                            && payment.getPaymentMethod()!= null &&
-                            "token_demo_R".equals(payment.getPaymentMethod().getToken()));
+            boolean alreadySeededWithR = paymentRepository.existsByPaymentStatusAndPaymentMethodToken(PaymentStatus.PENDING, "token_demo_R");
 
             if (!alreadySeededWithR) {
                 Payment payment = new Payment();
@@ -80,10 +80,7 @@ public class DevDataConfig {
                 paymentRepository.save(payment);
             }
 
-            boolean alreadySeededWithF = paymentRepository.findAll().stream()
-                    .anyMatch(payment -> payment.getPaymentStatus() == PaymentStatus.PENDING
-                            && payment.getPaymentMethod()!= null &&
-                            "token_demo_F".equals(payment.getPaymentMethod().getToken()));
+            boolean alreadySeededWithF = paymentRepository.existsByPaymentStatusAndPaymentMethodToken(PaymentStatus.PENDING, "token_demo_F");
 
             if (!alreadySeededWithF) {
                 Payment payment = new Payment();
