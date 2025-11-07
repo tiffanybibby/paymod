@@ -10,7 +10,9 @@ public record CreatePaymentRequest(
         @NotNull
         Long paymentMethodId,
 
-        @NotNull @DecimalMin("0.01") @Digits(integer = 17, fraction = 2)
+        @NotNull
+        @DecimalMin("0.01")
+        @Digits(integer = 17, fraction = 2)
         BigDecimal amount,
 
         String currency
