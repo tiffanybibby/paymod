@@ -41,11 +41,13 @@ public final class ApiMapperUtil {
     public static PaymentDto toPaymentDto(Payment payment) {
         if (payment == null) return null;
         Long userId = payment.getUser() != null ? payment.getUser().getId() : null;
-        Long paymentId = payment.getPaymentMethod() != null ? payment.getPaymentMethod().getId() : null;
+        String userEmail = payment.getUser() != null ? payment.getUser().getEmail() : null;
+        Long paymentMethodId = payment.getPaymentMethod() != null ? payment.getPaymentMethod().getId() : null;
         return new PaymentDto(
                 payment.getId(),
                 userId,
-                paymentId,
+                userEmail,
+                paymentMethodId,
                 payment.getAmount(),
                 payment.getCurrency(),
                 payment.getPaymentStatus(),

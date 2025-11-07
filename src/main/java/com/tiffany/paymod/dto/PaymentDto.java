@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record PaymentDto(
         Long id,
         Long userId,
+        String userEmail,
         Long paymentMethodId,
         BigDecimal amount,
         String currency,
