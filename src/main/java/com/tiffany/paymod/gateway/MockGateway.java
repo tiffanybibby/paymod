@@ -22,6 +22,6 @@ public class MockGateway implements PaymentGateway {
         if (token != null && token.endsWith("R")) {
             return new CreateChargeResult(ref, PaymentStatus.PENDING, null, null);
         }
-        return new CreateChargeResult(ref, PaymentStatus.SUCCEEDED, null, null);
+        return new CreateChargeResult(ref, PaymentStatus.SUCCESS, null, null);
     }
 }

@@ -77,7 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .map(existingPayment -> {
                     if (existingPayment.getUser() != null && userId.equals(existingPayment.getUser().getId())) {
                         PaymentStatus oldStatus = existingPayment.getPaymentStatus();
-                        existingPayment.setPaymentStatus(PaymentStatus.SUCCEEDED);
+                        existingPayment.setPaymentStatus(PaymentStatus.SUCCESS);
                         paymentRepository.save(existingPayment);
                         events.publishEvent(new PaymentStatusChangedDomainEvent(
                                 existingPayment.getId(), oldStatus, existingPayment.getPaymentStatus()
