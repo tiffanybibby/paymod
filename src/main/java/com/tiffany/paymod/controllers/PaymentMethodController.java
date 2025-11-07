@@ -1,5 +1,8 @@
 package com.tiffany.paymod.controllers;
 
+import com.tiffany.paymod.dto.CreatePaymentMethodRequest;
+import com.tiffany.paymod.dto.PaymentMethodDto;
+import com.tiffany.paymod.dto.UpdatePaymentMethodRequest;
 import com.tiffany.paymod.model.PaymentMethod;
 import com.tiffany.paymod.service.PaymentMethodService;
 import lombok.RequiredArgsConstructor;
@@ -13,28 +16,29 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/wallet")
 public class PaymentMethodController {
+
     private final PaymentMethodService service;
 
-    @PostMapping("/payment-methods")
-    public ResponseEntity<PaymentMethod> add(
-            @RequestHeader("X-User-ID") Long userId,
-            @RequestBody Map<String, Object> payload
-    ) {
-        return ResponseEntity.ok(service.add(userId, payload));
+    @GetMapping("/payment-methods")
+    public List<PaymentMethodDto> list(@RequestHeader("X-User-ID") Long userId) {
+        return service.list(userId);
     }
 
-    @GetMapping("/payment-methods")
-    public List<PaymentMethod> list(@RequestHeader("X-User-ID") Long userId) {
-        return service.list(userId);
+    @PostMapping("/payment-methods")
+    public ResponseEntity<PaymentMethodDto> add(
+            @RequestHeader("X-User-ID") Long userId,
+            @RequestBody CreatePaymentMethodRequest request
+            ) {
+        return ResponseEntity.ok(service.add(userId, request));
     }
 
     @PatchMapping("/payment-methods/{id}")
     public ResponseEntity<Void> patch(
             @RequestHeader("X-User-ID") Long userId,
             @PathVariable Long id,
-            @RequestBody Map<String, Object> payload
+            @RequestBody UpdatePaymentMethodRequest request
     ) {
-        boolean ok = service.patch(userId, id, payload);
+        boolean ok = service.patch(userId, id, request);
         return ok ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
     }
 
