@@ -1,7 +1,7 @@
 package com.tiffany.paymod.service;
 
-import com.tiffany.paymod.model.Payment;
-import com.tiffany.paymod.model.PaymentHistory;
+import com.tiffany.paymod.dto.PaymentDto;
+import com.tiffany.paymod.dto.PaymentHistoryDto;
 import com.tiffany.paymod.model.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -11,13 +11,13 @@ import java.util.Optional;
 public interface PaymentService {
 
 
-    List<Payment> getAllPayments();
+    List<PaymentDto> getAllPayments();
 
-    Optional<Payment> getPayment(Long paymentId);
+    Optional<PaymentDto> getPayment(Long paymentId);
 
-    List<Payment> listPaymentsByUser(Long userId);
+    List<PaymentDto> listPaymentsByUser(Long userId);
 
-    List<Payment> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus);
+    List<PaymentDto> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus);
 
 //    boolean createPayment(Long userId, Payment payment);
 
@@ -25,9 +25,9 @@ public interface PaymentService {
 
     boolean failPayment(Long userId, Long paymentId);
 
-    List<PaymentHistory> findByPaymentIdOrderByOccurredAtAsc(Long paymentId);
+    List<PaymentHistoryDto> findByPaymentIdOrderByOccurredAtAsc(Long paymentId);
 
-    Payment createAndProcess(Long userId, Long paymentMethodId, BigDecimal amount, String currency);
+    PaymentDto createAndProcess(Long userId, Long paymentMethodId, BigDecimal amount, String currency);
 
-    Payment process(Long paymentId);
+    PaymentDto process(Long paymentId);
 }

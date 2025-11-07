@@ -2,14 +2,17 @@ package com.tiffany.paymod.service.impl;
 
 import com.tiffany.paymod.domain.PaymentCreatedDomainEvent;
 import com.tiffany.paymod.domain.PaymentStatusChangedDomainEvent;
+import com.tiffany.paymod.dto.PaymentDto;
+import com.tiffany.paymod.dto.PaymentHistoryDto;
 import com.tiffany.paymod.gateway.PaymentGateway;
+import com.tiffany.paymod.utility.ApiMapperUtil;
 import com.tiffany.paymod.model.*;
 import com.tiffany.paymod.repository.PaymentHistoryRepository;
 import com.tiffany.paymod.repository.PaymentMethodRepository;
 import com.tiffany.paymod.repository.PaymentRepository;
 import com.tiffany.paymod.repository.UserRepository;
 import com.tiffany.paymod.service.PaymentService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -32,28 +35,32 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<PaymentDto> getAllPayments() {
+        return paymentRepository.findAll().stream().map(ApiMapperUtil::toPaymentDto).toList();
     }
 
     @Override
-    public Optional<Payment> getPayment(Long paymentId) {
-        return paymentRepository.findById(paymentId);
+    @Transactional(readOnly = true)
+    public Optional<PaymentDto> getPayment(Long paymentId) {
+        return paymentRepository.findById(paymentId).map(ApiMapperUtil::toPaymentDto);
     }
 
     @Override
-    public List<Payment> listPaymentsByUser(Long userId) {
-        return paymentRepository.findPaymentsByUserId(userId);
+    @Transactional(readOnly = true)
+    public List<PaymentDto> listPaymentsByUser(Long userId) {
+        return paymentRepository.findPaymentsByUserId(userId).stream().map(ApiMapperUtil::toPaymentDto).toList();
     }
 
     @Override
-    public List<Payment> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus) {
-        return paymentRepository.findPaymentsByUserIdAndPaymentStatus(userId, paymentStatus);
+    @Transactional(readOnly = true)
+    public List<PaymentDto> listPaymentsByUserAndStatus(Long userId, PaymentStatus paymentStatus) {
+        return paymentRepository.findPaymentsByUserIdAndPaymentStatus(userId, paymentStatus).stream().map(ApiMapperUtil::toPaymentDto).toList();
     }
 
 //    @Override
 //    @Transactional
-//    public boolean createPayment(Long userId, Payment payment) {
+//    public boolean createPayment(Long userId, PaymentDto payment) {
 //        return userRepository.findById(userId)
 //                .map(existingUser -> {
 //                    payment.setUser(existingUser);
@@ -100,13 +107,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentHistory> findByPaymentIdOrderByOccurredAtAsc(Long paymentId) {
-        return paymentHistoryRepository.findByPaymentIdOrderByOccurredAtAsc(paymentId);
+    @Transactional(readOnly = true)
+    public List<PaymentHistoryDto> findByPaymentIdOrderByOccurredAtAsc(Long paymentId) {
+        return paymentHistoryRepository.findByPaymentIdOrderByOccurredAtAsc(paymentId).stream().map(ApiMapperUtil::toPaymentHistoryDto).toList();
     }
 
     @Transactional
     @Override
-    public Payment createAndProcess(Long userId, Long paymentMethodId, BigDecimal amount, String currency) {
+    public PaymentDto createAndProcess(Long userId, Long paymentMethodId, BigDecimal amount, String currency) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         PaymentMethod paymentMethod = paymentMethodRepository.findByIdAndUserIdAndDeletedAtIsNull(paymentMethodId, userId).orElseThrow(() -> new IllegalArgumentException("Payment method not found for user"));
@@ -137,15 +145,15 @@ public class PaymentServiceImpl implements PaymentService {
                     payment.getId(), oldStatus, payment.getPaymentStatus()
             ));
         }
-        return payment;
+        return ApiMapperUtil.toPaymentDto(payment);
     }
 
     @Transactional
     @Override
-    public Payment process(Long paymentId) {
+    public PaymentDto process(Long paymentId) {
         var payment = paymentRepository.findById(paymentId).orElseThrow();
         if (payment.getPaymentStatus() != PaymentStatus.PENDING)
-            return payment;
+            return ApiMapperUtil.toPaymentDto(payment);
 
         PaymentMethod paymentMethod = payment.getPaymentMethod();
         PaymentGateway.CreateChargeResult result = gateway.charge(paymentMethod.getToken(), payment.getAmount(), payment.getCurrency());
@@ -157,6 +165,6 @@ public class PaymentServiceImpl implements PaymentService {
         if (oldStatus != result.status()) {
             events.publishEvent(new PaymentStatusChangedDomainEvent(payment.getId(), oldStatus, result.status()));
         }
-        return payment;
+        return ApiMapperUtil.toPaymentDto(payment);
     }
 }
