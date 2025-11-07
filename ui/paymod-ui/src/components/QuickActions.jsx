@@ -12,7 +12,8 @@ export default function QuickActions({ onRefresh }) {
         <>
             <StackLayout direction="row" gap={2} style={{ marginBottom: 12 }} wrap>
                 <Button onClick={() => setOpenAdd(true)}>Add User</Button>
-                <Button onClick={() => setOpenPay(true)}>Make a Payment</Button>
+                {/*TODO: Enable for admin only with user lookup*/}
+                {/*<Button onClick={() => setOpenPay(true)}>Make a Payment</Button>*/}
             </StackLayout>
 
             <Modal open={openAdd} onClose={() => setOpenAdd(false)}>
