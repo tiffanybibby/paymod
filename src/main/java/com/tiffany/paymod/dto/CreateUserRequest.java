@@ -8,6 +8,8 @@ public record CreateUserRequest (
         @Email
         String email,
         String firstName,
-        String lastName
+        String lastName,
+        String billingPostalCode,
+        String billingCountry
 ){
 }

@@ -50,11 +50,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void addUser(CreateUserRequest request) {
-        User newUser = new User();
-        newUser.setEmail(request.email());
-        newUser.setFirstName(request.firstName());
-        newUser.setLastName(request.lastName());
-        userRepository.save(newUser);
+        Optional<User> existingUser = userRepository.findByEmail(request.email());
+        if (existingUser.isPresent()) {
+            throw new IllegalArgumentException("User with email " + request.email() + " already exists.");
+        } else {
+            User newUser = new User();
+            newUser.setEmail(request.email());
+            newUser.setFirstName(request.firstName());
+            newUser.setLastName(request.lastName());
+            newUser.setBillingPostalCode(request.billingPostalCode());
+            newUser.setBillingCountry(request.billingCountry());
+            userRepository.save(newUser);
+        }
     }
 
     @Override

@@ -27,6 +27,7 @@ public class DevDataConfig {
                 newUser.setEmail("tiffany@example.com");
                 newUser.setFirstName("Tiffany");
                 newUser.setLastName("Bibby");
+                newUser.setBillingPostalCode("90210");
                 return users.save(newUser);
             });
 
