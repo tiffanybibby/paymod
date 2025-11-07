@@ -7,7 +7,7 @@ import com.tiffany.paymod.model.PaymentEventType;
 import com.tiffany.paymod.model.PaymentHistory;
 import com.tiffany.paymod.repository.PaymentHistoryRepository;
 import com.tiffany.paymod.repository.PaymentRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
