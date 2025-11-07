@@ -66,3 +66,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+a[aria-current="page"] { font-weight: 600; }
+header nav a:hover { background: rgba(255,255,255,0.06); }

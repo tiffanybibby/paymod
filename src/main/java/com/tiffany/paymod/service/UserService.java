@@ -1,19 +1,25 @@
 package com.tiffany.paymod.service;
 
-import com.tiffany.paymod.model.User;
+import com.tiffany.paymod.dto.CreateUserRequest;
+import com.tiffany.paymod.dto.UpdateUserRequest;
+import com.tiffany.paymod.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    List<User> fetchAllUsers();
+    List<UserDto> fetchAllUsers();
 
-    Optional<User> fetchUser(Long id);
+    Optional<UserDto> fetchUser(Long id);
 
-    void addUser(User user);
+    UserDto fetchOrCreate(String email, String firstName, String lastName);
 
-    boolean updateUser(Long id, User updatedUser);
+    void addUser(CreateUserRequest request);
+
+    boolean updateUser(Long id, UpdateUserRequest request);
+
+    boolean patchUser(Long id, UpdateUserRequest request);
 
     void deleteUser(Long id);
 }

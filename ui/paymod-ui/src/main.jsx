@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.jsx'
 import {SaltProvider} from "@salt-ds/core";
 import "@salt-ds/theme/index.css";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -30,11 +32,15 @@ function usePrefersColorScheme() {
 
 function Root() {
     const mode = usePrefersColorScheme();
-return (
-      <SaltProvider mode={mode} density="medium">
-    <App />
-      </SaltProvider>
-);
+    return (
+        <SaltProvider mode={mode} density="medium">
+            <BrowserRouter>
+                <AuthProvider>
+                    <App/>
+                </AuthProvider>
+            </BrowserRouter>
+        </SaltProvider>
+    );
 }
 
 createRoot(document.getElementById("root")).render(

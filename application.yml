@@ -1,6 +1,8 @@
 spring:
   application:
     name: paymod
+  profiles:
+    active: dev
   h2:
     console:
       enabled: true
