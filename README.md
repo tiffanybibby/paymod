@@ -38,3 +38,11 @@ Payments Module utilizing Java, SpringBoot, JPA, Kafka
 3. Service Impl applies business logic, persists via JPA
 4. On success, Service publishes `PaymentCreated` to Kafka
 5. Consumer reacts asynchronously
+
+### UI preview (Salt DS)
+<p align="center">
+<img src="./docs/screenshots/admin.png" alt="Admin Grid" width="720"><br/>
+<img src="./docs/screenshots/admin-dashboard.png" alt="Admin dashboard" width="720"><br/>
+<img src="./docs/screenshots/wallet.png" alt="Customer Wallet" width="720"><br/>
+<img src="./docs/screenshots/customer-pay.png" alt="Customer payment" width="720">
+</p>
