@@ -18,7 +18,7 @@ export default function Login() {
         try {
             const r = await axios.post("/api/auth/login", { email, firstName, lastName });
             login(r.data);
-            nav("/customerCheckout");
+            nav("/checkout");
         } finally { setBusy(false); }
     }
 

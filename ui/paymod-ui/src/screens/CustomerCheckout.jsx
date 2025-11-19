@@ -175,7 +175,7 @@ export default function CustomerCheckout() {
                                             </strong>
                                         </Text>
                                         <StatusIndicator
-                                            status={receipt.status === "SUCCESS" ? "SUCCESS" : receipt.status === "FAILED" ? "error" : "info"}>
+                                            status={receipt.status === "SUCCESS" ? "success" : receipt.status === "FAILED" ? "error" : "info"}>
                                             {receipt.status === "SUCCESS" && "Payment succeeded"}
                                             {receipt.status === "FAILED" && "Payment failed"}
                                             {receipt.status === "PENDING" && "Payment processing"}

@@ -33,7 +33,6 @@ export default function AddUserForm({ onClose, onSuccess }) {
         try {
             await axios.post("/api/users", payload);
             setMsg({ type: "success", text: "User created." });
-            console.log(msg)
             onSuccess?.();
             onClose?.();
         } catch (err) {

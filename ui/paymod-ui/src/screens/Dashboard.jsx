@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useLayoutEffect, useRef } from "react";
+import {useEffect, useMemo, useState, useLayoutEffect, useRef, useCallback} from "react";
 import axios from "axios";
 import { Panel, StackLayout, Text } from "@salt-ds/core";
 import {ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line} from "recharts";
@@ -55,12 +55,26 @@ function ChartPanel({ title, children }) {
 export default function Dashboard() {
     const [payments, setPayments] = useState([]);
 
-    useEffect(() => {
-        (async () => {
+    const loadPayments = useCallback(async () => {
+        try {
             const r = await axios.get("/api/payments");
             setPayments(r.data ?? []);
-        })();
+        } catch (err) {
+            console.error("Failed to load payments", err);
+        }
     }, []);
+
+    useEffect(() => {
+        loadPayments();
+    }, [loadPayments]);
+
+    useEffect(() => {
+        const handler = () => {
+            loadPayments();
+        };
+        window.addEventListener("paymod:refresh", handler);
+        return () => window.removeEventListener("paymod:refresh", handler);
+    }, [loadPayments]);
 
     const byStatus = useMemo(() => {
         const buckets = { PENDING: 0, SUCCESS: 0, FAILED: 0 };
