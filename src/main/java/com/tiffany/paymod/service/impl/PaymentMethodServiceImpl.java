@@ -66,6 +66,8 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
             for (PaymentMethod existingPaymentMethod : allPaymentMethods)
                 existingPaymentMethod.setDefault(existingPaymentMethod.getId().equals(paymentMethodId));
         }
+        User user = paymentMethod.getUser();
+        user.setDefaultPaymentMethod(paymentMethod);
         return true;
     }
 
