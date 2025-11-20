@@ -4,10 +4,17 @@ import { Panel, StackLayout, Text } from "@salt-ds/core";
 import {ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line} from "recharts";
 import "../App.css";
 
-const fmtDateISO = (s) => {
-    const d = new Date(s);
-    return isNaN(d) ? "" : d.toISOString().slice(0, 10);
-};
+// Use the ISO's own date part if it’s a string; otherwise fall back to local
+const fmtDay = (s) =>
+    (typeof s === "string" && s.length >= 10) ? s.slice(0, 10)  // "YYYY-MM-DD"
+        : (() => {
+            const d = new Date(s);
+            if (Number.isNaN(d)) return "";
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+        })();
 const fmtUSD = (n) => `$${Number(n).toFixed(2)}`;
 const fmtUSDCompact = (n) => {
     const v = Number(n);
@@ -92,7 +99,7 @@ export default function Dashboard() {
     const byDay = useMemo(() => {
         const m = new Map();
         for (const p of payments) {
-            const day = fmtDateISO(p.createdAt);
+            const day = fmtDay(p.createdAt);
             if (!day) continue;
             const status = p.status || p.paymentStatus;
             if (!["PENDING", "SUCCESS", "FAILED"].includes(status)) {
@@ -134,11 +141,10 @@ export default function Dashboard() {
     const COLORS = ["#69b34c", "#ff4e50", "#f5a623", "#4a90e2", "#bd10e0", "#50e3c2"];
     const AXIS = "#a8a8a8";
     const GRID = "#3a3a3a";
-    const smallTick = { fontSize: 10 };
     const TICK_FONTSIZE = 10;
     const LABEL_FONTSIZE = 11;
     const X_TICK_MARGIN = 2;
-    const X_AXIS_H = 28;  // space for tick text + label line inside the chart
+    const X_AXIS_H = 28;
     const Y_AXIS_W = 44;
 
     return (
@@ -218,8 +224,13 @@ export default function Dashboard() {
                         </BarChart>
                     </ChartPanel>
                     <ChartPanel title="Daily Amount (USD)">
-                        <BarChart data={byDay} margin={{ top: 6, right: 6, bottom: 2, left: 6 }}>
-                            <CartesianGrid stroke={GRID}/>
+                        <BarChart
+                            data={byDay}
+                            margin={{ top: 6, right: 6, bottom: 2, left: 6 }}
+                            barCategoryGap={byDay.length <= 2 ? "60%" : "30%"}
+                            barGap={0}
+                        >
+                            <CartesianGrid stroke={GRID} />
                             <XAxis
                                 dataKey="date"
                                 stroke={AXIS}
@@ -241,7 +252,12 @@ export default function Dashboard() {
                                 label={{ value: "USD", angle: -90, position: "insideLeft", fontSize: LABEL_FONTSIZE }}
                             />
                             <Tooltip formatter={(v) => fmtUSD(v)} />
-                            <Bar dataKey="totalAmount" name="Total Amount" />
+                            <Bar
+                                dataKey="totalAmount"
+                                name="Total Amount"
+                                maxBarSize={byDay.length <= 2 ? 28 : 48}
+                                radius={[4, 4, 0, 0]}
+                            />
                         </BarChart>
                     </ChartPanel>
                 </div>
