@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { StackLayout, Text, FormField, Input, Button, StatusIndicator } from "@salt-ds/core";
+import { StackLayout, Text, FormField, Input, Button, StatusIndicator, Label } from "@salt-ds/core";
 
 export default function AddUserForm({ onClose, onSuccess }) {
     const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ export default function AddUserForm({ onClose, onSuccess }) {
             await axios.post("/api/users", payload);
             setMsg({ type: "success", text: "User created." });
             onSuccess?.();
-            onClose?.();
+            // onClose?.(); //TODO: decide if I want to close the form on success
         } catch (err) {
             setMsg({ type: "error", text: "Failed to create user. (Email may already exist.)" });
         } finally {
@@ -89,9 +89,10 @@ export default function AddUserForm({ onClose, onSuccess }) {
                     <Button type="submit" disabled={busy || !email.trim()}>Create</Button>
                 </StackLayout>
                 {msg && (
-                    <StatusIndicator status={msg.type === "success" ? "success" : "error"}>
-                        {msg.text}
-                    </StatusIndicator>
+                    <StackLayout direction="row" align="center" gap={1} style={{ marginTop: 4 }}>
+                    <StatusIndicator status={msg.type === "success" ? "success" : "error"}/>
+                        <Label> {msg.text} </Label>
+                    </StackLayout>
                 )}
             </StackLayout>
         </form>
