@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import {StackLayout, Text, FormField, Input, Button, Panel, StatusIndicator} from "@salt-ds/core";
+import {StackLayout, Text, FormField, Input, Button, Panel, StatusIndicator, Label} from "@salt-ds/core";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function CustomerCheckout() {
@@ -147,9 +147,10 @@ export default function CustomerCheckout() {
                                 {busy ? "Processing..." : "Pay"}
                             </Button>
                             {msg && (
-                                <StatusIndicator
-                                    status={msg.type === "success" ? "success" : "error"}>{msg.text}
-                                </StatusIndicator>
+                                <StackLayout direction="row" align="center" gap={1} style={{ marginTop: 4 }}>
+                                    <StatusIndicator status={msg.type === "success" ? "success" : "error"}/>
+                                    <Label> {msg.text} </Label>
+                                </StackLayout>
                             )}
                             {receipt && (
                                 <Panel

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { StackLayout, Text, FormField, Input, Button, StatusIndicator } from "@salt-ds/core";
+import {StackLayout, Text, FormField, Input, Button, StatusIndicator, Label} from "@salt-ds/core";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Link } from "react-router-dom";
 
@@ -99,9 +99,10 @@ export default function MakePaymentForm({ onClose, onSuccess }) {
                     </Button>
                 </StackLayout>
                 {msg && (
-                    <StatusIndicator status={msg.type === "success" ? "success" : "error"}>
-                        {msg.text}
-                    </StatusIndicator>
+                    <StackLayout direction="row" align="center" gap={1} style={{ marginTop: 4 }}>
+                        <StatusIndicator status={msg.type === "success" ? "success" : "error"}/>
+                        <Label> {msg.text} </Label>
+                    </StackLayout>
                 )}
             </StackLayout>
         </form>
