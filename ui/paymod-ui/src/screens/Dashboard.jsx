@@ -224,8 +224,13 @@ export default function Dashboard() {
                         </BarChart>
                     </ChartPanel>
                     <ChartPanel title="Daily Amount (USD)">
-                        <BarChart data={byDay} margin={{ top: 6, right: 6, bottom: 2, left: 6 }}>
-                            <CartesianGrid stroke={GRID}/>
+                        <BarChart
+                            data={byDay}
+                            margin={{ top: 6, right: 6, bottom: 2, left: 6 }}
+                            barCategoryGap={byDay.length <= 2 ? "60%" : "30%"}
+                            barGap={0}
+                        >
+                            <CartesianGrid stroke={GRID} />
                             <XAxis
                                 dataKey="date"
                                 stroke={AXIS}
@@ -247,7 +252,12 @@ export default function Dashboard() {
                                 label={{ value: "USD", angle: -90, position: "insideLeft", fontSize: LABEL_FONTSIZE }}
                             />
                             <Tooltip formatter={(v) => fmtUSD(v)} />
-                            <Bar dataKey="totalAmount" name="Total Amount" />
+                            <Bar
+                                dataKey="totalAmount"
+                                name="Total Amount"
+                                maxBarSize={byDay.length <= 2 ? 28 : 48}
+                                radius={[4, 4, 0, 0]}
+                            />
                         </BarChart>
                     </ChartPanel>
                 </div>
