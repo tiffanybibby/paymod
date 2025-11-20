@@ -135,6 +135,11 @@ export default function Dashboard() {
     const AXIS = "#a8a8a8";
     const GRID = "#3a3a3a";
     const smallTick = { fontSize: 10 };
+    const TICK_FONTSIZE = 10;
+    const LABEL_FONTSIZE = 11;
+    const X_TICK_MARGIN = 2;
+    const X_AXIS_H = 28;  // space for tick text + label line inside the chart
+    const Y_AXIS_W = 44;
 
     return (
         <div className="container page">
@@ -157,20 +162,22 @@ export default function Dashboard() {
                             <XAxis
                                 dataKey="date"
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
+                                tickMargin={X_TICK_MARGIN}
                                 tickLine={false}
                                 axisLine={{ stroke: GRID }}
                                 interval="preserveStartEnd"
-                                label={{ value: "Date", position: "insideBottom", offset: -4, fontSize: 10 }}
+                                height={X_AXIS_H}
+                                label={{ value: "Date", position: "insideBottom", offset: -1, fontSize: LABEL_FONTSIZE }}
                             />
                             <YAxis
                                 allowDecimals={false}
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
                                 tickLine={false}
                                 axisLine={{ stroke: GRID }}
-                                width={28}
-                                label={{ value: "Count", angle: -90, position: "insideLeft", fontSize: 10 }}
+                                width={Y_AXIS_W}
+                                label={{ value: "Count", angle: -90, position: "insideLeft", fontSize: LABEL_FONTSIZE }}
                             />
                             <Tooltip />
                             <Line type="monotone" dataKey="SUCCESS" name="Success" dot={false} />
@@ -188,21 +195,24 @@ export default function Dashboard() {
                             <XAxis
                                 type="number"
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
                                 tickFormatter={fmtUSDCompact}
+                                tickMargin={X_TICK_MARGIN}
                                 tickLine={false}
                                 axisLine={{ stroke: GRID }}
-                                label={{ value: "Total amount (USD)", position: "insideBottom", offset: -4, fontSize: 10 }}
+                                height={X_AXIS_H}
+                                label={{ value: "Total amount (USD)", position: "insideBottom", offset: -1, fontSize: LABEL_FONTSIZE }}
                             />
                             <YAxis
                                 dataKey="email"
                                 type="category"
                                 width={120}
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
                                 tickFormatter={shortenEmail}
                                 tickLine={false}
-                                axisLine={{ stroke: GRID }}/>
+                                axisLine={{ stroke: GRID }}
+                            />
                             <Tooltip formatter={(v) => fmtUSD(v)} />
                             <Bar dataKey="totalAmount" name="Amount" />
                         </BarChart>
@@ -213,20 +223,22 @@ export default function Dashboard() {
                             <XAxis
                                 dataKey="date"
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
+                                tickMargin={X_TICK_MARGIN}
                                 tickLine={false}
                                 axisLine={{ stroke: GRID }}
                                 interval="preserveStartEnd"
-                                label={{ value: "Date", position: "insideBottom", offset: -4, fontSize: 10 }}
+                                height={X_AXIS_H}
+                                label={{ value: "Date", position: "insideBottom", offset: -1, fontSize: LABEL_FONTSIZE }}
                             />
                             <YAxis
                                 stroke={AXIS}
-                                tick={smallTick}
+                                tick={{ fontSize: TICK_FONTSIZE }}
                                 tickFormatter={fmtUSDCompact}
                                 tickLine={false}
                                 axisLine={{ stroke: GRID }}
-                                width={40}
-                                label={{ value: "USD", angle: -90, position: "insideLeft", fontSize: 10 }}
+                                width={Y_AXIS_W}
+                                label={{ value: "USD", angle: -90, position: "insideLeft", fontSize: LABEL_FONTSIZE }}
                             />
                             <Tooltip formatter={(v) => fmtUSD(v)} />
                             <Bar dataKey="totalAmount" name="Total Amount" />
